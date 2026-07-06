@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nguyện vọng xét tuyển đại học</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Nguyện vọng xét tuyển đại học</h1>
+  </header>
+
+  <main class="container">
+    <section class="form-card">
+      <h2 id="form-title">Thêm nguyện vọng mới</h2>
+      <form id="wish-form" autocomplete="off">
+        <input type="hidden" id="wish-id">
+
+        <label for="ten_truong">Tên trường</label>
+        <input type="text" id="ten_truong" required autocomplete="off" placeholder="VD: Đại học Bách Khoa Hà Nội">
+
+        <label for="nganh">Ngành</label>
+        <input type="text" id="nganh" autocomplete="off" placeholder="VD: Công nghệ thông tin">
+
+        <label for="diem_san">Điểm sàn</label>
+        <input type="number" step="0.01" id="diem_san" autocomplete="off" placeholder="VD: 24.5">
+
+        <div class="row-2">
+          <div>
+            <label for="hoc_phi_ky">Học phí / kỳ (đ)</label>
+            <input type="number" step="1000" id="hoc_phi_ky" autocomplete="off" placeholder="VD: 12000000">
+          </div>
+          <div>
+            <label for="hoc_phi_nam">Học phí / năm (đ)</label>
+            <input type="number" step="1000" id="hoc_phi_nam" autocomplete="off" placeholder="VD: 24000000">
+          </div>
+        </div>
+
+        <label for="dia_chi">Địa chỉ</label>
+        <input type="text" id="dia_chi" autocomplete="off" placeholder="VD: Số 1 Đại Cồ Việt, Hà Nội">
+
+        <div class="form-actions">
+          <button type="submit" id="submit-btn">Lưu nguyện vọng</button>
+          <button type="button" id="cancel-edit-btn" class="secondary" hidden>Huỷ sửa</button>
+        </div>
+        <p id="form-error" class="error" hidden></p>
+      </form>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h2>Danh sách nguyện vọng</h2>
+        <button type="button" id="export-btn" class="btn-export" hidden>📸 Xuất hình ảnh</button>
+      </div>
+      <p id="empty-state" class="empty-state" hidden>Chưa có nguyện vọng nào. Hãy thêm ở form phía trên.</p>
+      <div id="wish-list" class="wish-list"></div>
+    </section>
+
+    <div id="export-container"></div>
+  </main>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="app.js"></script>
+</body>
+</html>
