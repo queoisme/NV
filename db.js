@@ -14,6 +14,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ten_truong TEXT NOT NULL,
     nganh TEXT,
+    to_hop_mon TEXT,
     diem_san REAL,
     hoc_phi_ky REAL,
     hoc_phi_nam REAL,
@@ -21,5 +22,10 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   )
 `);
+
+const columns = db.pragma('table_info(wishes)').map(c => c.name);
+if (!columns.includes('to_hop_mon')) {
+  db.exec(`ALTER TABLE wishes ADD COLUMN to_hop_mon TEXT`);
+}
 
 module.exports = db;

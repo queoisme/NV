@@ -9,14 +9,15 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const insertStmt = db.prepare(`
-  INSERT INTO wishes (ten_truong, nganh, diem_san, hoc_phi_ky, hoc_phi_nam, dia_chi)
-  VALUES (@ten_truong, @nganh, @diem_san, @hoc_phi_ky, @hoc_phi_nam, @dia_chi)
+  INSERT INTO wishes (ten_truong, nganh, to_hop_mon, diem_san, hoc_phi_ky, hoc_phi_nam, dia_chi)
+  VALUES (@ten_truong, @nganh, @to_hop_mon, @diem_san, @hoc_phi_ky, @hoc_phi_nam, @dia_chi)
 `);
 
 const updateStmt = db.prepare(`
   UPDATE wishes SET
     ten_truong = @ten_truong,
     nganh = @nganh,
+    to_hop_mon = @to_hop_mon,
     diem_san = @diem_san,
     hoc_phi_ky = @hoc_phi_ky,
     hoc_phi_nam = @hoc_phi_nam,
@@ -28,6 +29,7 @@ function normalizeBody(body) {
   return {
     ten_truong: (body.ten_truong || '').trim(),
     nganh: (body.nganh || '').trim(),
+    to_hop_mon: (body.to_hop_mon || '').trim(),
     diem_san: body.diem_san === '' || body.diem_san == null ? null : Number(body.diem_san),
     hoc_phi_ky: body.hoc_phi_ky === '' || body.hoc_phi_ky == null ? null : Number(body.hoc_phi_ky),
     hoc_phi_nam: body.hoc_phi_nam === '' || body.hoc_phi_nam == null ? null : Number(body.hoc_phi_nam),

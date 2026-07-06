@@ -2,6 +2,7 @@ const form = document.getElementById('wish-form');
 const wishIdInput = document.getElementById('wish-id');
 const tenTruongInput = document.getElementById('ten_truong');
 const nganhInput = document.getElementById('nganh');
+const toHopMonInput = document.getElementById('to_hop_mon');
 const diemSanInput = document.getElementById('diem_san');
 const hocPhiKyInput = document.getElementById('hoc_phi_ky');
 const hocPhiNamInput = document.getElementById('hoc_phi_nam');
@@ -52,6 +53,7 @@ function fillForm(wish) {
   wishIdInput.value = wish.id;
   tenTruongInput.value = wish.ten_truong || '';
   nganhInput.value = wish.nganh || '';
+  toHopMonInput.value = wish.to_hop_mon || '';
   diemSanInput.value = wish.diem_san ?? '';
   hocPhiKyInput.value = wish.hoc_phi_ky ?? '';
   hocPhiNamInput.value = wish.hoc_phi_nam ?? '';
@@ -75,6 +77,7 @@ function renderWishes(wishes) {
     card.innerHTML = `
       <h3>${escapeHtml(wish.ten_truong)}</h3>
       <div class="field"><span class="label">Ngành</span><span class="value">${escapeHtml(wish.nganh) || 'Chưa có'}</span></div>
+      <div class="field"><span class="label">Tổ hợp môn</span><span class="value">${escapeHtml(wish.to_hop_mon) || 'Chưa có'}</span></div>
       <div class="field"><span class="label">Điểm sàn</span><span class="value">${formatScore(wish.diem_san)}</span></div>
       <div class="field"><span class="label">Học phí / kỳ</span><span class="value">${formatMoney(wish.hoc_phi_ky)}</span></div>
       <div class="field"><span class="label">Học phí / năm</span><span class="value">${formatMoney(wish.hoc_phi_nam)}</span></div>
@@ -129,6 +132,7 @@ form.addEventListener('submit', async (e) => {
   const payload = {
     ten_truong: tenTruongInput.value.trim(),
     nganh: nganhInput.value.trim(),
+    to_hop_mon: toHopMonInput.value.trim(),
     diem_san: diemSanInput.value,
     hoc_phi_ky: hocPhiKyInput.value,
     hoc_phi_nam: hocPhiNamInput.value,
@@ -174,6 +178,7 @@ function buildExportHtml(wishes) {
           <span class="nv-badge">NV${i + 1}</span>${escapeHtml(w.ten_truong)}
         </h3>
         <div class="export-row"><span class="elabel">Ngành</span><span class="evalue">${escapeHtml(w.nganh) || '—'}</span></div>
+        <div class="export-row"><span class="elabel">Tổ hợp môn</span><span class="evalue">${escapeHtml(w.to_hop_mon) || '—'}</span></div>
         <div class="export-row"><span class="elabel">Điểm sàn</span><span class="evalue">${formatScore(w.diem_san)}</span></div>
         <div class="export-row"><span class="elabel">Học phí / kỳ</span><span class="evalue">${formatMoney(w.hoc_phi_ky)}</span></div>
         <div class="export-row"><span class="elabel">Học phí / năm</span><span class="evalue">${formatMoney(w.hoc_phi_nam)}</span></div>
@@ -191,6 +196,29 @@ function buildExportHtml(wishes) {
     </div>`;
 }
 
+function closePreview() {
+  const overlay = document.getElementById('image-preview-overlay');
+  if (overlay) overlay.remove();
+}
+
+function showImagePreview(dataUrl) {
+  const overlay = document.createElement('div');
+  overlay.id = 'image-preview-overlay';
+  overlay.className = 'preview-overlay';
+  overlay.innerHTML = `
+    <div class="preview-content">
+      <p class="preview-hint">Nhấn giữ hình ảnh để lưu về máy</p>
+      <img src="${dataUrl}" alt="Nguyện vọng xét tuyển">
+      <button type="button" class="preview-close">Đóng</button>
+    </div>
+  `;
+  overlay.querySelector('.preview-close').addEventListener('click', closePreview);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closePreview();
+  });
+  document.body.appendChild(overlay);
+}
+
 exportBtn.addEventListener('click', async () => {
   if (cachedWishes.length === 0) return;
   exportBtn.disabled = true;
@@ -205,10 +233,8 @@ exportBtn.addEventListener('click', async () => {
       useCORS: true,
       backgroundColor: null,
     });
-    const link = document.createElement('a');
-    link.download = `nguyen-vong-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const dataUrl = canvas.toDataURL('image/png');
+    showImagePreview(dataUrl);
   } catch (err) {
     alert('Không xuất được hình ảnh. Vui lòng thử lại.');
   } finally {
